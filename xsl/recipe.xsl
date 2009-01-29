@@ -7,7 +7,7 @@
 
 	<xsl:template match="/member">
 		<xsl:element name='a'>
-			<xsl:attribute name='href'>/recipes/html/chefs/<xsl:value-of select="id"/>.html</xsl:attribute>		
+			<xsl:attribute name='href'>../chefs/<xsl:value-of select="id"/>.html</xsl:attribute>		
 			<xsl:value-of select="name"/>
 		</xsl:element>
 	</xsl:template>
@@ -17,18 +17,18 @@
 		
 		<div id="reviews_orderby">
 			See all by:
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('./reviews/recipe/',@id,'-newest.html')"/></xsl:attribute>Newest</xsl:element>
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/',@id,'-newest.html')"/></xsl:attribute>Newest</xsl:element>
 			<xsl:text> </xsl:text>
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('./reviews/recipe/',@id,'-oldest.html')"/></xsl:attribute>Oldest</xsl:element>
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/',@id,'-oldest.html')"/></xsl:attribute>Oldest</xsl:element>
 			<xsl:text> </xsl:text>
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('./reviews/recipe/',@id,'-highest-rating.html')"/></xsl:attribute>Highest Rating</xsl:element>
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/',@id,'-highest-rating.html')"/></xsl:attribute>Highest Rating</xsl:element>
 		</div>
 		
 		<div id="reviews">
 			<xsl:for-each select="reviews/review">
 				<xsl:sort select="@datetime" order="descending"/>
 				<xsl:if test="position() &lt; 6">
-				<xsl:apply-templates select="document(concat('../xml/reviews/',@docid,'.xml'))" mode="meta"/>
+				<xsl:apply-templates select="document(concat('../xml/docs/reviews/',@docid,'.xml'))" mode="meta"/>
 				</xsl:if>
 			</xsl:for-each>
 		</div>
@@ -39,7 +39,7 @@
 			<div>
 				<xsl:value-of select="rating"/> stars
 				<xsl:text> </xsl:text>
-				<xsl:apply-templates select="document(concat('../xml/chefs/',member,'.xml'))"/>
+				<xsl:apply-templates select="document(concat('../xml/docs/chefs/',member,'.xml'))"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="time"/>
 			</div>
@@ -61,7 +61,7 @@
 		
 				by 
 		
-				<xsl:apply-templates select="document(concat('../xml/chefs/',submitter,'.xml'))"/>
+				<xsl:apply-templates select="document(concat('../xml/docs/chefs/',submitter,'.xml'))"/>
 
 				<div>
 					<xsl:value-of select="description"/>

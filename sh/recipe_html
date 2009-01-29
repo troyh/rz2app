@@ -8,7 +8,7 @@ HTML_DIR=$ROOT_DIR/html
 
 if [ ! -z "$1" ]; then
 	RECIPE_ID=$1
-	xmlstarlet tr $XSL_DIR/recipe.xsl $XML_DIR/recipes/$RECIPE_ID.xml  > $HTML_DIR/$RECIPE_ID.html
+	xmlstarlet tr $XSL_DIR/recipe.xsl $XML_DIR/docs/recipes/$RECIPE_ID.xml  > $HTML_DIR/recipes/$RECIPE_ID.html
 	exit;
 fi
 
@@ -17,6 +17,6 @@ sed -e 's:^.*/\([0-9][0-9]*\)\.xml:\1:' |
 while read RECIPE_ID; do
 	echo $RECIPE_ID
 	$ROOT_DIR/sh/recipe_meta $RECIPE_ID
-	xmlstarlet tr $XSL_DIR/recipe.xsl $XML_DIR/recipes/$RECIPE_ID.xml  > $HTML_DIR/$RECIPE_ID.html
+	xmlstarlet tr $XSL_DIR/recipe.xsl $XML_DIR/docs/recipes/$RECIPE_ID.xml  > $HTML_DIR/recipes/$RECIPE_ID.html
 done
 	
