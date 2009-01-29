@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ROOT_DIR=/var/www/recipes
+TMP_DIR=$ROOT_DIR/tmp
+XML_DIR=$ROOT_DIR/xml
+XSL_DIR=$ROOT_DIR/xsl
+HTML_DIR=$ROOT_DIR/html
+
+SCRIPT_NAME=`basename $0`;
+
+RECIPE_ID=$1
+
+xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=newest $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$RECIPE_ID-newest.html
+xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=oldest $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$RECIPE_ID-oldest.html
+xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=highestrating $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$RECIPE_ID-highest-rating.html
+

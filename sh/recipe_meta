@@ -1,0 +1,33 @@
+#!/bin/bash
+
+ROOT_DIR=/var/www/recipes
+TMP_DIR=$ROOT_DIR/tmp
+XML_DIR=$ROOT_DIR/xml
+
+SCRIPT_NAME=`basename $0`;
+
+RECIPE_ID=$1
+
+exec 6>&1
+exec > $XML_DIR/meta/recipes/$RECIPE_ID.xml
+
+cat <<EOF
+<recipe id="$RECIPE_ID">
+	<reviews>
+EOF
+
+~/ouzo/memget idx/review/recid/$RECIPE_ID |
+	sed -e 's/^.*://' -e 's/, *$//' -e 's/,/\n/g' |
+	while read DOCID; do
+		DT=`xmlstarlet sel -t -v "/review/time" $XML_DIR/reviews/$DOCID.xml`;
+		cat <<EOF
+	<review docid="$DOCID" datetime="$DT"/>
+EOF
+done
+
+cat <<EOF
+	</reviews>
+</recipe>
+EOF
+
+exec 1>&6 6>&-

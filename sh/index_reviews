@@ -1,0 +1,42 @@
+#!/bin/bash
+
+ROOT_DIR=/var/www/recipes
+TMP_DIR=$ROOT_DIR/tmp
+
+SCRIPT_NAME=`basename $0`;
+
+# find $ROOT_DIR/xml/reviews/ -type f |
+# while read XML; do
+# 	DOCID=`basename $XML .xml`
+# 	xmlstarlet sel -t -v "/review/recid" -o "&#09;$DOCID" $XML;
+# done > $TMP_DIR/$SCRIPT_NAME.1
+
+sort $TMP_DIR/$SCRIPT_NAME.1 |
+perl -e '
+
+$last_recid=0;
+@docids=();
+
+while (<>)
+{
+	chomp;
+	($recid,$docid)=split(/\t/);
+	
+	if ($last_recid ne $recid)
+	{
+		if ($last_recid) 
+		{
+			print "$last_recid\t".join(" ",@docids)."\n";
+			@docids=();
+		}
+	}
+	
+	$last_recid=$recid;
+	push(@docids,$docid);
+}
+
+print "$last_recid\t".join(" ",@docids)."\n";
+	
+' |
+sed -e 's:^:idx/review/recid/:' > $TMP_DIR/$SCRIPT_NAME.2
+

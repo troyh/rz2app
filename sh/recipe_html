@@ -1,0 +1,22 @@
+#!/bin/bash
+
+ROOT_DIR=/var/www/recipes
+TMP_DIR=$ROOT_DIR/tmp
+XSL_DIR=$ROOT_DIR/xsl
+XML_DIR=$ROOT_DIR/xml
+HTML_DIR=$ROOT_DIR/html
+
+if [ ! -z "$1" ]; then
+	RECIPE_ID=$1
+	xmlstarlet tr $XSL_DIR/recipe.xsl $XML_DIR/recipes/$RECIPE_ID.xml  > $HTML_DIR/$RECIPE_ID.html
+	exit;
+fi
+
+find $XML_DIR/recipes/ -type f |
+sed -e 's:^.*/\([0-9][0-9]*\)\.xml:\1:' |
+while read RECIPE_ID; do
+	echo $RECIPE_ID
+	$ROOT_DIR/sh/recipe_meta $RECIPE_ID
+	xmlstarlet tr $XSL_DIR/recipe.xsl $XML_DIR/recipes/$RECIPE_ID.xml  > $HTML_DIR/$RECIPE_ID.html
+done
+	
