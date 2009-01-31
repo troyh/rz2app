@@ -10,7 +10,14 @@ SCRIPT_NAME=`basename $0`;
 
 RECIPE_ID=$1
 
-xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=newest $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$RECIPE_ID-newest.html
-xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=oldest $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$RECIPE_ID-oldest.html
-xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=highestrating $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$RECIPE_ID-highest-rating.html
+if [ -z "$2" ]; then
+	echo "Usage: $SCRIPT_NAME <RECIPE_ID> <'newest'|'oldest'|'highest_rated'>";
+	exit;
+fi
+if [ "$2" != "newest" -a "$2" != "oldest" -a "$2" != "highest_rated" ]; then
+	echo "Usage: $SCRIPT_NAME <RECIPE_ID> <'newest'|'oldest'|'highest_rated'>";
+	exit;
+fi
+
+xmlstarlet tr $XSL_DIR/reviews/recipe.xsl -s orderby=$2 $XML_DIR/meta/recipes/$RECIPE_ID.xml > $HTML_DIR/reviews/recipe/$2/$RECIPE_ID.html
 

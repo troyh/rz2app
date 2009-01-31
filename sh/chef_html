@@ -8,4 +8,4 @@ HTML_DIR=$ROOT_DIR/html
 
 CHEF_ID=$1
 
-xmlstarlet tr $XSL_DIR/chef.xsl $XML_DIR/chefs/$CHEF_ID.xml  > $HTML_DIR/chefs/$CHEF_ID.html
+xmlstarlet tr $XSL_DIR/chef.xsl $XML_DIR/docs/chefs/$CHEF_ID.xml  > $HTML_DIR/chefs/$CHEF_ID.html

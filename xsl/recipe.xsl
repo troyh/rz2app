@@ -16,12 +16,12 @@
 		<h2>Newest Reviews</h2>
 		
 		<div id="reviews_orderby">
-			See all by:
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/',@id,'-newest.html')"/></xsl:attribute>Newest</xsl:element>
+			See all <xsl:value-of select="count(reviews/review)"/> ordered by:
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/newest/',@id,'.html')"/></xsl:attribute>Newest</xsl:element>
 			<xsl:text> </xsl:text>
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/',@id,'-oldest.html')"/></xsl:attribute>Oldest</xsl:element>
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/oldest/',@id,'.html')"/></xsl:attribute>Oldest</xsl:element>
 			<xsl:text> </xsl:text>
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/',@id,'-highest-rating.html')"/></xsl:attribute>Highest Rating</xsl:element>
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/highest_rated/',@id,'.html')"/></xsl:attribute>Highest Rating</xsl:element>
 		</div>
 		
 		<div id="reviews">
@@ -56,7 +56,7 @@
 				
 			</head>
 			<body>
-				
+
 				<h1><xsl:value-of select="Title"/> (#<xsl:value-of select="ID"/>)</h1>
 		
 				by 
@@ -73,8 +73,7 @@
 				<div>Cook time: <xsl:value-of select="rec_cooktime"/> minutes</div>
 				<div>Prep time: <xsl:value-of select="rec_preptime"/> minutes</div>
 				<div>Total time: <xsl:value-of select="rec_totaltime"/> minutes</div>
-		
-				
+
 				<xsl:apply-templates select="document(concat('../xml/meta/recipes/',ID,'.xml'))" mode="meta"/>
 				
 			</body>

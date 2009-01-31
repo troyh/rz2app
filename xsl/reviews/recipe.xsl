@@ -21,7 +21,7 @@
 		<body>
 				
 		<h1>
-			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../',@id,'.html')"/></xsl:attribute>Recipe #<xsl:value-of select="@id"/></xsl:element>		
+			<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../../recipes/',@id,'.html')"/></xsl:attribute>Recipe #<xsl:value-of select="@id"/></xsl:element>		
 		</h1>
 
 		<h2>Newest Reviews</h2>
@@ -32,15 +32,15 @@
 					See all by:
 					Newest
 					<xsl:text> </xsl:text>
-					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../reviews/recipe/',@id,'-oldest.html')"/></xsl:attribute>Oldest</xsl:element>
+					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../oldest/',@id,'.html')"/></xsl:attribute>Oldest</xsl:element>
 					<xsl:text> </xsl:text>
-					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../reviews/recipe/',@id,'-highest-rating.html')"/></xsl:attribute>Highest Rating</xsl:element>
+					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../highest_rated/',@id,'.html')"/></xsl:attribute>Highest Rating</xsl:element>
 				</div>
 				
 				<div id="reviews">
 					<xsl:for-each select="reviews/review">
 						<xsl:sort select="@datetime" order="descending"/>
-						<xsl:apply-templates select="document(concat('../../xml/reviews/',@docid,'.xml'))"/>
+						<xsl:apply-templates select="document(concat('../../xml/docs/reviews/',@docid,'.xml'))"/>
 					</xsl:for-each>
 				</div>
 				
@@ -48,27 +48,27 @@
 			<xsl:when test="$orderby='oldest'">
 				<div id="reviews_orderby">
 					See all by:
-					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../reviews/recipe/',@id,'-newest.html')"/></xsl:attribute>Newest</xsl:element>
+					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../newest/',@id,'.html')"/></xsl:attribute>Newest</xsl:element>
 					<xsl:text> </xsl:text>
 					Oldest
 					<xsl:text> </xsl:text>
-					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../reviews/recipe/',@id,'-highest-rating.html')"/></xsl:attribute>Highest Rating</xsl:element>
+					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../reviews/recipe/highest_rated/',@id,'.html')"/></xsl:attribute>Highest Rating</xsl:element>
 				</div>
 
 				<div id="reviews">
 					<xsl:for-each select="reviews/review">
 						<xsl:sort select="@datetime" order="ascending"/>
-						<xsl:apply-templates select="document(concat('../../xml/reviews/',@docid,'.xml'))"/>
+						<xsl:apply-templates select="document(concat('../../xml/docs/reviews/',@docid,'.xml'))"/>
 					</xsl:for-each>
 				</div>
 				
 			</xsl:when>
-			<xsl:when test="$orderby='highestrating'">
+			<xsl:when test="$orderby='highest_rated'">
 				<div id="reviews_orderby">
 					See all by:
-					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../reviews/recipe/',@id,'-newest.html')"/></xsl:attribute>Newest</xsl:element>
+					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../newest/',@id,'.html')"/></xsl:attribute>Newest</xsl:element>
 					<xsl:text> </xsl:text>
-					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../../reviews/recipe/',@id,'-oldest.html')"/></xsl:attribute>Oldest</xsl:element>
+					<xsl:element name='a'><xsl:attribute name='href'><xsl:value-of select="concat('../oldest/',@id,'.html')"/></xsl:attribute>Oldest</xsl:element>
 					<xsl:text> </xsl:text>
 					Highest Rating
 				</div>
@@ -76,7 +76,7 @@
 				<div id="reviews">
 					<xsl:for-each select="reviews/review">
 						<xsl:sort select="@rating" order="descending"/>
-						<xsl:apply-templates select="document(concat('../../xml/reviews/',@docid,'.xml'))"/>
+						<xsl:apply-templates select="document(concat('../../xml/docs/reviews/',@docid,'.xml'))"/>
 					</xsl:for-each>
 				</div>
 				
@@ -93,7 +93,7 @@
 			<div>
 				<xsl:value-of select="rating"/> stars
 				<xsl:text> </xsl:text>
-				<xsl:apply-templates select="document(concat('../../xml/chefs/',member,'.xml'))"/>
+				<xsl:apply-templates select="document(concat('../../xml/docs/chefs/',member,'.xml'))"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="time"/>
 			</div>

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+. `dirname $0`/../conf/app.conf
+
+
+CHEF_ID=$1
+
+exec 6>&1
+exec > $XML_DIR/meta/chefs/$CHEF_ID.xml
+
+cat <<EOF
+<chef id="$CHEF_ID">
+	<recipes>
+EOF
+
+~/ouzo/memget idx/recipe/submitter/$CHEF_ID |
+	sed -e 's/^.*://' -e 's/, *$//' -e 's/,/\n/g' |
+	while read DOCID; do
+		DT=`xmlstarlet sel -t -v "/recipe/submitted" $XML_DIR/docs/recipes/$DOCID.xml`;
+		cat <<EOF
+	<recipe docid="$DOCID" datetime="$DT"/>
+EOF
+done
+
+cat <<EOF
+	</recipes>
+</chef>
+EOF
+
+exec 1>&6 6>&-

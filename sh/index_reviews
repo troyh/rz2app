@@ -5,11 +5,11 @@ TMP_DIR=$ROOT_DIR/tmp
 
 SCRIPT_NAME=`basename $0`;
 
-# find $ROOT_DIR/xml/reviews/ -type f |
-# while read XML; do
-# 	DOCID=`basename $XML .xml`
-# 	xmlstarlet sel -t -v "/review/recid" -o "&#09;$DOCID" $XML;
-# done > $TMP_DIR/$SCRIPT_NAME.1
+find $ROOT_DIR/xml/docs/reviews/ -type f |
+while read XML; do
+	DOCID=`basename $XML .xml`
+	xmlstarlet sel -t -v "/review/recid" -o "&#09;$DOCID" $XML;
+done > $TMP_DIR/$SCRIPT_NAME.1
 
 sort $TMP_DIR/$SCRIPT_NAME.1 |
 perl -e '

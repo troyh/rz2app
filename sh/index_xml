@@ -1,0 +1,77 @@
+#!/bin/bash
+
+. `dirname $0`/../conf/app.conf
+
+
+cat > $TMP_DIR/index.conf.xsl <<EOF
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:strip-space elements="*"/>
+	<xsl:output encoding="UTF-8" indent="no" method="text" />
+
+	<xsl:template match="/indexes/documents/key">
+		<xsl:value-of select="../@location"/>
+		<xsl:text>&#x09;</xsl:text>
+		<xsl:value-of select="@xpath"/>
+		<xsl:text>&#x0A;</xsl:text>
+	</xsl:template>
+	
+</xsl:stylesheet>
+EOF
+
+xmlstarlet tr $TMP_DIR/index.conf.xsl $CONF_DIR/index.conf |
+while read LN; do
+	
+	DOCS=`echo $LN|cut -f 1 -d ' '`
+	XPATH=`echo $LN|cut -f 2 -d ' '`
+	
+	if [ ! -d $TMP_DIR/index/$XPATH ]; then
+		echo "Creating $TMP_DIR/index/$XPATH"
+		mkdir -p $TMP_DIR/index/$XPATH
+	fi
+
+	if [ ! -s $TMP_DIR/index/$XPATH/key_doc_pairs ]; then
+		TOTAL_DOCS=`find $XML_DIR/$DOCS/ -maxdepth 1 -type f | wc -l`;
+		echo "Indexing $TOTAL_DOCS documents...";
+		
+		find $XML_DIR/$DOCS/ -maxdepth 1 -type f |
+		while read XML; do
+			DOCID=`basename $XML .xml`
+			xmlstarlet sel -t -v "$XPATH" -o "&#09;$DOCID" $XML;
+		done > $TMP_DIR/index/$XPATH/key_doc_pairs
+	fi
+
+	sort $TMP_DIR/index/$XPATH/key_doc_pairs |
+	perl -e '
+
+	$last_key=0;
+	@docids=();
+
+	while (<>)
+	{
+		chomp;
+		($key,$docid)=split(/\t/);
+
+		if ($last_key ne $key)
+		{
+			if ($last_key) 
+			{
+				print "$last_key\t".join(" ",@docids)."\n";
+				@docids=();
+			}
+		}
+
+		$last_key=$key;
+		push(@docids,$docid);
+	}
+
+	print "$key\t".join(" ",@docids)."\n";
+
+	' |
+	sed -e "s:^:idx$XPATH/:" > $TMP_DIR/index/$XPATH/key_doc_pairs_merged
+		
+done
+
+rm -f $TMP_DIR/index.conf.xsl
