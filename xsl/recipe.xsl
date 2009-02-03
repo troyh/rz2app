@@ -4,6 +4,8 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:output encoding="UTF-8" indent="yes" method="html" />
+	
+	<xsl:key name="unitid" match="unit" use="@id"/>
 
 	<xsl:template match="/member">
 		<xsl:element name='a'>
@@ -30,6 +32,51 @@
 				<xsl:if test="position() &lt; 6">
 				<xsl:apply-templates select="document(concat('../xml/docs/reviews/',@docid,'.xml'))" mode="meta"/>
 				</xsl:if>
+			</xsl:for-each>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="/food">
+		<xsl:value-of select="name"/>
+	</xsl:template>
+	
+	<xsl:template match="ingredients">
+		<div>
+			<xsl:for-each select="ing">
+				<div>
+					<xsl:value-of select="format-number(@qtylo,'#.#')"/><xsl:if test="@qtyhi &gt; @qtylo"> to <xsl:value-of select="format-number(@qtyhi,'#.#')"/></xsl:if><xsl:text> </xsl:text>
+					<xsl:if test="@qty_cont != 0">(<xsl:value-of select="format-number(@qty_cont,'#.#')"/><xsl:text> </xsl:text><xsl:value-of select="@unit_cont"/>)<xsl:text> </xsl:text></xsl:if>
+					<xsl:if test="@unit != '0'">
+						<xsl:variable name="uid" select="@unit"/>
+						<xsl:variable name="qtyhi" select="@qtyhi"/>
+						<xsl:for-each select="document('../xml/docs/units.xml')">
+							<xsl:variable name="unitelem" select="key('unitid',$uid)"/>
+							<xsl:choose>
+								<xsl:when test="$qtyhi &gt; '1'"><xsl:value-of select="$unitelem/@plural"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$unitelem/@singular"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:for-each>
+						<xsl:text> </xsl:text>
+					</xsl:if>
+					<xsl:value-of select="preprep"/><xsl:text> </xsl:text>
+					
+					<xsl:apply-templates select="document(concat('../xml/docs/foods/',@food_id,'.xml'))"/>
+					<xsl:text> </xsl:text>
+					
+					<xsl:if test="string-length(prep)">,<xsl:text> </xsl:text><xsl:value-of select="prep"/></xsl:if>
+					<xsl:if test="string-length(notes) &gt; 0"><xsl:text> </xsl:text>(<xsl:value-of select="notes"/>)</xsl:if>
+					<xsl:if test="@optional!='0'"> (optional)</xsl:if>
+				</div>
+			</xsl:for-each>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="steps">
+		<div>
+			<xsl:for-each select="step">
+				<div>
+					<xsl:value-of select="position()"/>.<xsl:text> </xsl:text><xsl:value-of select="."/>
+				</div>
 			</xsl:for-each>
 		</div>
 	</xsl:template>
@@ -74,6 +121,9 @@
 				<div>Prep time: <xsl:value-of select="rec_preptime"/> minutes</div>
 				<div>Total time: <xsl:value-of select="rec_totaltime"/> minutes</div>
 
+				<xsl:apply-templates select="ingredients"/>
+				<xsl:apply-templates select="steps"/>
+					
 				<xsl:apply-templates select="document(concat('../xml/meta/recipes/',ID,'.xml'))" mode="meta"/>
 				
 			</body>
