@@ -41,16 +41,16 @@
 				
 				<div>
 					<xsl:for-each select="document('../xml/meta/site/most_recent_chefs.xml')">
-						<xsl:for-each select="/chefs/chef">
+						<xsl:for-each select="/chefs/member">
 							<xsl:if test="position() &lt;= 10">
 								<div>
 									<div>
 										<xsl:element name='a'>
-											<xsl:attribute name='href'>recipes/<xsl:value-of select="ID"/>.html</xsl:attribute>
-											<xsl:value-of select="Title"/>
+											<xsl:attribute name='href'>chefs/<xsl:value-of select="id"/>.html</xsl:attribute>
+											<xsl:value-of select="name"/>
 										</xsl:element>
 									</div>
-									<div><xsl:value-of select="description"/></div>
+									<div><xsl:value-of select="chefpage_about"/></div>
 								</div>
 							</xsl:if>
 						</xsl:for-each>
@@ -72,11 +72,16 @@
 								<div>
 									<div>
 										<xsl:element name='a'>
-											<xsl:attribute name='href'>recipes/<xsl:value-of select="ID"/>.html</xsl:attribute>
-											<xsl:value-of select="Title"/>
+											<xsl:attribute name='href'>recipes/<xsl:value-of select="recid"/>.html</xsl:attribute>
+											<xsl:value-of select="recid"/>
 										</xsl:element>
 									</div>
-									<div><xsl:value-of select="description"/></div>
+									<div>
+										<xsl:choose>
+											<xsl:when test="string-length(comments) &gt; 250"><xsl:value-of select="substring(comments,1,250)"/>...</xsl:when>
+											<xsl:otherwise><xsl:value-of select="comments"/></xsl:otherwise>
+										</xsl:choose>
+									</div>
 								</div>
 							</xsl:if>
 						</xsl:for-each>

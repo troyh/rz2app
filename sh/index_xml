@@ -78,12 +78,15 @@ while read LN; do
 		done
 	done
 done
-exit;
+
 
 find $TMP_DIR/index/ -type d |
 while read DIR; do
 	
 	if [ -s $DIR/key_doc_pairs ]; then
+		
+		INDEX_PATH=`echo $DIR | sed -e "s:^$TMP_DIR/index/::" | grep "/"`;
+		
 		sort $DIR/key_doc_pairs |
 		perl -e '
 
@@ -111,9 +114,15 @@ while read DIR; do
 		print "$key\t".join(" ",@docids)."\n";
 
 		' |
-		sed -e "s:^:idx/$DOCS_NAME/$KEY_NAME/:" > $TMP_DIR/index/$DOCS_NAME/$KEY_NAME/key_doc_pairs_merged
+		sed -e "s:^:idx/$INDEX_PATH/:" > $DIR/key_doc_pairs_merged
 	fi
 		
+done
+
+find $TMP_DIR/index/ -type f -name "key_doc_pairs_merged" |
+while read F; do
+	echo "$F -> Ouzo";
+	~/ouzo/memset < $F;
 done
 
 rm -f $TMP_DIR/index.conf.xsl
