@@ -37,33 +37,90 @@
 	</xsl:template>
 	
 	<xsl:template match="/food">
-		<xsl:value-of select="name"/>
+		<xsl:param name="qty"/>
+		<xsl:choose>
+			<xsl:when test="$qty = 1"><xsl:value-of select="name_s"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="name"/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+	
+	<xsl:template name="unit_display">
+		<xsl:param name="uid"/>
+		<xsl:param name="qtyhi"/>
+		<xsl:for-each select="document('../xml/docs/units.xml')">
+			<xsl:variable name="unitelem" select="key('unitid',$uid)"/>
+			<xsl:choose>
+				<xsl:when test="$qtyhi &gt; '1'"><xsl:value-of select="$unitelem/@plural"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$unitelem/@singular"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="format_number">
+		<xsl:param name="n"/>
+		<xsl:variable name="n_frac"  select="$n * 100 mod 100"/>
+		<xsl:variable name="n_whole" select="($n * 100 - $n_frac) div 100"/>
+		<xsl:if test="$n_whole != '0'">
+			<xsl:value-of select="$n_whole"/>
+		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="$n_frac &gt;= 75">&#190;</xsl:when><!-- 3/4 -->
+			<xsl:when test="$n_frac &gt;= 50">&#189;</xsl:when><!-- 1/2 -->
+			<xsl:when test="$n_frac &gt;= 25">&#188;</xsl:when><!-- 1/4 -->
+			<xsl:when test="$n_frac &gt;= 12"><sup>1</sup>/8</xsl:when>
+			<xsl:when test="$n_frac &gt;= 6"><sup>1</sup>/16</xsl:when>
+			<xsl:when test="$n_frac = 0"></xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+		
 	
 	<xsl:template match="ingredients">
 		<div>
 			<xsl:for-each select="ing">
 				<div>
-					<xsl:value-of select="format-number(@qtylo,'#.#')"/><xsl:if test="@qtyhi &gt; @qtylo"> to <xsl:value-of select="format-number(@qtyhi,'#.#')"/></xsl:if><xsl:text> </xsl:text>
-					<xsl:if test="@qty_cont != 0">(<xsl:value-of select="format-number(@qty_cont,'#.#')"/><xsl:text> </xsl:text><xsl:value-of select="@unit_cont"/>)<xsl:text> </xsl:text></xsl:if>
-					<xsl:if test="@unit != '0'">
-						<xsl:variable name="uid" select="@unit"/>
-						<xsl:variable name="qtyhi" select="@qtyhi"/>
-						<xsl:for-each select="document('../xml/docs/units.xml')">
-							<xsl:variable name="unitelem" select="key('unitid',$uid)"/>
-							<xsl:choose>
-								<xsl:when test="$qtyhi &gt; '1'"><xsl:value-of select="$unitelem/@plural"/></xsl:when>
-								<xsl:otherwise><xsl:value-of select="$unitelem/@singular"/></xsl:otherwise>
-							</xsl:choose>
-						</xsl:for-each>
+					<xsl:if test="@unit != 41"><!-- 41 is 'to taste' -->
+						<xsl:call-template name="format_number">
+							<xsl:with-param name="n" select="@qty"/>
+						</xsl:call-template>
+					
+						<xsl:if test="@qtyhi &gt; @qty">
+							to 
+							<xsl:call-template name="format_number">
+								<xsl:with-param name="n" select="@qtyhi"/>
+							</xsl:call-template>
+						</xsl:if>
+					
 						<xsl:text> </xsl:text>
+					
+						<xsl:if test="@qty_cont != 0">
+							(<xsl:call-template name="format_number">
+								<xsl:with-param name="n" select="@qty_cont"/>
+							</xsl:call-template>
+							<xsl:text> </xsl:text>
+							<xsl:call-template name="unit_display">
+								<xsl:with-param name="uid" select="@unit_cont"/>
+								<xsl:with-param name="qtyhi" select="@qty_cont"/>
+							</xsl:call-template>)
+							<xsl:text> </xsl:text>
+						</xsl:if>
+					
+						<xsl:if test="@unit != '0'">
+							<xsl:call-template name="unit_display">
+								<xsl:with-param name="uid" select="@unit"/>
+								<xsl:with-param name="qtyhi" select="@qtyhi"/>
+							</xsl:call-template>
+							<xsl:text> </xsl:text>
+						</xsl:if>
 					</xsl:if>
+						
 					<xsl:value-of select="preprep"/><xsl:text> </xsl:text>
 					
-					<xsl:apply-templates select="document(concat('../xml/docs/foods/',@food_id,'.xml'))"/>
-					<xsl:text> </xsl:text>
+					<xsl:apply-templates select="document(concat('../xml/docs/foods/',@food_id,'.xml'))">
+						<xsl:with-param name="qty" select="@qtyhi"/>
+					</xsl:apply-templates>
 					
-					<xsl:if test="string-length(prep)">,<xsl:text> </xsl:text><xsl:value-of select="prep"/></xsl:if>
+					<xsl:if test="string-length(prep)">, <xsl:value-of select="prep"/></xsl:if>
 					<xsl:if test="string-length(notes) &gt; 0"><xsl:text> </xsl:text>(<xsl:value-of select="notes"/>)</xsl:if>
 					<xsl:if test="@optional!='0'"> (optional)</xsl:if>
 				</div>
