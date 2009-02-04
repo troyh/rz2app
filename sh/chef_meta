@@ -17,8 +17,9 @@ EOF
 	sed -e 's/^.*://' -e 's/, *$//' -e 's/,/\n/g' |
 	while read DOCID; do
 		DT=`xmlstarlet sel -t -v "/recipe/submitted" $XML_DIR/docs/recipes/$DOCID.xml`;
+		RATING=`xmlstarlet sel -t -v "sum(/recipe/reviews/review/@rating) div count(/recipe/reviews/review)" $XML_DIR/meta/recipes/$DOCID.xml`;
 		cat <<EOF
-	<recipe docid="$DOCID" datetime="$DT"/>
+	<recipe docid="$DOCID" datetime="$DT" rating_avg="$RATING"/>
 EOF
 done
 

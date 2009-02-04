@@ -4,6 +4,8 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:output encoding="UTF-8" indent="yes" method="html" />
+
+	<xsl:include href="std.xsl"/>
 	
 	<xsl:key name="unitid" match="unit" use="@id"/>
 
@@ -157,9 +159,11 @@
 
 		<html>
 			<head>
-				
+				<title><xsl:value-of select="Title"/></title>
 			</head>
 			<body>
+				
+				<xsl:call-template name="header"/>
 
 				<h1><xsl:value-of select="Title"/> (#<xsl:value-of select="ID"/>)</h1>
 		
@@ -182,6 +186,8 @@
 				<xsl:apply-templates select="steps"/>
 					
 				<xsl:apply-templates select="document(concat('../xml/meta/recipes/',ID,'.xml'))" mode="meta"/>
+
+				<xsl:call-template name="footer"/>
 				
 			</body>
 		</html>

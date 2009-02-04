@@ -1,11 +1,29 @@
 #!/bin/bash
 
-ROOT_DIR=/var/www/recipes
-TMP_DIR=$ROOT_DIR/tmp
-XSL_DIR=$ROOT_DIR/xsl
-XML_DIR=$ROOT_DIR/xml
-HTML_DIR=$ROOT_DIR/html
+. `dirname $0`/../conf/app.conf
 
 CHEF_ID=$1
 
+# #
+# # Compute the average rating on the chef's recipes
+# #
+# 
+# # Get the list of their recipes
+# # ID_LIST=`egrep "^idx/recipes/submitter/$CHEF_ID	" $INDEX_DIR/recipes/submitter/key_doc_pairs_merged | cut -f 2- | sed -e 's/  */|/g'`
+# ID_LIST=`xmlstarlet sel -t -m "/chef/recipes/recipe" -v "@docid" -o '|'  $XML_DIR/meta/chefs/$CHEF_ID.xml | sed -e 's/|$//'`;
+# 
+# # Get the review docids for their recipes
+# egrep "^($ID_LIST)	" $INDEX_DIR/reviews/recid/key_doc_pairs | cut -f 2 |
+# while read REVIEW_DOC_ID; do
+# 	xmlstarlet sel -t -v "/review/rating" $XML_DIR/docs/reviews/$REVIEW_DOC_ID.xml
+# done > $TMP_DIR/$SCIPT_NAME.$CHEF_ID.1
+# 
+# AVG_RATING=`cat $TMP_DIR/$SCIPT_NAME.$CHEF_ID.1 | perl -e 'print "(";while(<>){chomp;print;print "+";++$n}print "0)/$n\n";' | bc`;
+# 
+
+
+
+#
+# Generate the HTML
+#
 xmlstarlet tr $XSL_DIR/chef.xsl $XML_DIR/docs/chefs/$CHEF_ID.xml  > $HTML_DIR/chefs/$CHEF_ID.html

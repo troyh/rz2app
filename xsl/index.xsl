@@ -3,13 +3,17 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:output encoding="UTF-8" indent="yes" method="xml" />
+	
+	<xsl:include href="std.xsl"/>
 
 	<xsl:template match="/">
 		<html>
-			<head></head>	
+			<head>
+				<title>rz2</title>
+			</head>	
 			<body>
 			
-				<h1>rz2</h1>
+				<xsl:call-template name="header"/>
 				
 				<h2>Recent recipes</h2>
 				
@@ -93,6 +97,8 @@
 						See more recent reviews
 					</xsl:element>
 				</div>
+
+				<xsl:call-template name="footer"/>
 		
 			</body>
 		</html>

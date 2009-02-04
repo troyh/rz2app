@@ -19,9 +19,10 @@ EOF
 ~/ouzo/memget idx/review/recid/$RECIPE_ID |
 	sed -e 's/^.*://' -e 's/, *$//' -e 's/,/\n/g' |
 	while read DOCID; do
-		DT=`xmlstarlet sel -t -v "/review/time" $XML_DIR/reviews/$DOCID.xml`;
+		DT=`xmlstarlet sel -t -v "/review/time" $XML_DIR/docs/reviews/$DOCID.xml`;
+		RATING=`xmlstarlet sel -t -v "/review/rating" $XML_DIR/docs/reviews/$DOCID.xml`;
 		cat <<EOF
-	<review docid="$DOCID" datetime="$DT"/>
+	<review docid="$DOCID" datetime="$DT" rating="$RATING"/>
 EOF
 done
 
