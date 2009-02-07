@@ -186,6 +186,28 @@
 				<xsl:apply-templates select="steps"/>
 					
 				<xsl:apply-templates select="document(concat('../xml/meta/recipes/',ID,'.xml'))" mode="meta"/>
+				
+				<h3>Post your review</h3>
+				<form method="post" action="../../cgi-bin/post.cgi/review">
+					<div>
+						<xsl:element name='input'>
+							<xsl:attribute name='type'>hidden</xsl:attribute>
+							<xsl:attribute name='name'>rec_id</xsl:attribute>
+							<xsl:attribute name='value'><xsl:value-of select="ID"/></xsl:attribute>
+						</xsl:element>
+					</div>
+					<div>
+						Rating:
+						<input type="radio" name="rating" value="0" />No rating
+						<input type="radio" name="rating" value="1" />1
+						<input type="radio" name="rating" value="2" />2
+						<input type="radio" name="rating" value="3" />3
+						<input type="radio" name="rating" value="4" />4
+						<input type="radio" name="rating" value="5" />5
+					</div>
+					<div><textarea name="comments" rows="5" cols="80"></textarea></div>
+					<input type="submit" value="Submit" />
+				</form>
 
 				<xsl:call-template name="footer"/>
 				
